@@ -1,0 +1,34 @@
+(10 points)
+
+Create a console application that will implement flashcards for Polish, English
+and German language using the knowledge from lecture no. 2.
+Use, among others: Dependency Injection, Dependency Inversion Principle, IoC Container,
+profiles, configuration classes and properties.
+Create classes like:
+• Entry - each object will represent a translation of one word
+• EntryRepository - this will be a repository of Entry class objects
+• FileService - class responsible for reading and preparing objects of the Entry class and
+adding them to the EntryRepository
+• FlashcardsApp - the main application class with the main method
+• FlashcardsController - class responsible for the application’s business logic and com-
+munication with the user.
+Create a console menu that will allow you to:
+• add a new word to the dictionary
+• display all words from the dictionary in a human-readable way
+• make a test where the user receives a random word from the dictionary and must enter
+its correct translation into two other languages (character case cannot be important
+when performing the test)
+Take into account the following requirements:
+• add an additional class/classes based on the profile mechanism so that, depending on
+the profile:
+– words were displayed as they were originally saved in the csv file
+– words were displayed on the console in CAPITAL LETTERS
+– words were displayed on the console in lowercase letters
+• the configuration file must be in YAML format
+• modify the application banner to display the logo-app file (the file has no extension)
+• the name of the file used in the application should be specified using an external
+property called pl.edu.pja.tpo02.filename
+Draw a diagram of the class hierarchy and dependencies and attach it to the ZIP archive as
+a JPG file.
+Send the solution as a ZIP archive called sXXXXX.zip, where sXXXXX is your index num-
+ber.
