@@ -1,3 +1,6 @@
 spring:
   profiles:
-    active: capital
+    active: original
+
+  banner:
+    location: logo-app

@@ -1,14 +1,45 @@
 package jeremijl.flashcardsproject;
 
+import java.util.Map;
+import java.util.Objects;
+
 public class Entry {
 
-    final String englishT;
-    final String polishT;
-    final String germanT;
+    public Map<Lang,String> translationMap;
 
-    public Entry(String englishT, String polishT, String germanT) {
-        this.englishT = englishT;
-        this.polishT = polishT;
-        this.germanT = germanT;
+    public Entry(Map<Lang,String> translationMap) {
+        this.translationMap = translationMap;
+    }
+
+    @Override
+    public String toString() {
+        return  translationMap.get(Lang.ENGLISH) + " - " +
+                translationMap.get(Lang.GERMAN) + " - " + translationMap.get(Lang.POLISH);
+    }
+
+
+    public String toCSV() {
+        return translationMap.get(Lang.ENGLISH) + ";" +
+                translationMap.get(Lang.GERMAN) + ";" + translationMap.get(Lang.POLISH);
+
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        else {
+            Entry entry = (Entry) obj;
+            return (
+                    this.translationMap.get(Lang.ENGLISH).equals(entry.translationMap.get(Lang.ENGLISH)) &&
+                    this.translationMap.get(Lang.POLISH).equals(entry.translationMap.get(Lang.POLISH)) &&
+                    this.translationMap.get(Lang.GERMAN).equals(entry.translationMap.get(Lang.GERMAN)));
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(translationMap);
     }
 }

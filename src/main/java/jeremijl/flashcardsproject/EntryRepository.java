@@ -1,21 +1,24 @@
 package jeremijl.flashcardsproject;
 
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Repository
 public class EntryRepository {
 
-    private List<Entry> entryList;
+    private final Set<Entry> entrySet;
 
     public EntryRepository() {
-        //entryList =
+        entrySet = new HashSet<>();
     }
 
     public void addEntry(Entry entry){
-        entryList.add(entry);
+        entrySet.add(entry);
     }
 
+    public Set<Entry> getEntrySet() {
+        return entrySet;
+    }
 }
