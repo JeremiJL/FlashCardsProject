@@ -27,7 +27,6 @@ public class FlashcardsController extends Thread{
         this.fileService = fileService;
         this.entryRepository = entryRepository;
         this.wordPrinter = wordPrinter;
-
         //Init
         fileService.extractEntriesFromFile();
         running = true;
@@ -36,10 +35,8 @@ public class FlashcardsController extends Thread{
 
     @Override
     public void run() {
-
-
         //User console - interface loop
-        String input = "";
+        String input;
 
         while(running){
 
@@ -68,7 +65,7 @@ public class FlashcardsController extends Thread{
         Entry randomEntry = entryRepository.getRandomEntry();
         //select language which translation will be missing
         Lang selectedLang = Lang.selectRandomLanguage();
-        Lang[] filteredArr = (Lang[]) Arrays.stream(Lang.values()).filter(e -> !e.equals(selectedLang)).toArray(Lang[]::new);
+        Lang[] filteredArr = Arrays.stream(Lang.values()).filter(e -> !e.equals(selectedLang)).toArray(Lang[]::new);
         //prepare massage
         System.out.println("Provide missing translation");
         wordPrinter.printText(randomEntry.selectedLangFormat(filteredArr) + "\n");
@@ -102,15 +99,12 @@ public class FlashcardsController extends Thread{
         //tell writer to update dictionary
         Entry newEntry = new Entry(translations);
         fileService.writeEntriesToFile(newEntry);
-
     }
 
     private void displayAllWords(){
-
         for (Entry entry : entryRepository.getEntrySet()){
             wordPrinter.printText(entry.toString() + "\n");
         }
-
     }
 
 

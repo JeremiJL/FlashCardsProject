@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 
 @Service
-@PropertySource("classpath:new.properties")
+@PropertySource("classpath:new.yaml")
 public class FileServiceCSV implements FileService {
 
     //path of file containing data
@@ -26,7 +26,7 @@ public class FileServiceCSV implements FileService {
     private final EntryRepository entryRepository;
 
 
-    public FileServiceCSV(@Value("${external.values.filepath}") String filePath, EntryRepository entryRepository) {
+    public FileServiceCSV(@Value("${pl.edu.pja.tpo02.filename}") String filePath, EntryRepository entryRepository) {
         this.filePath = filePath;
         this.entryRepository = entryRepository;
     }

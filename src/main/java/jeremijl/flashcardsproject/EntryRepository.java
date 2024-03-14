@@ -1,9 +1,7 @@
 package jeremijl.flashcardsproject;
 
 import org.springframework.stereotype.Repository;
-
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
 @Repository

@@ -23,14 +23,14 @@ public class Entry {
     }
 
     public String selectedLangFormat(Lang ... languages){
-        String text = "";
+        StringBuilder builder = new StringBuilder();
         for (Lang l : languages)
-            text += translationMap.get(l) + " - ";
+            builder.append(translationMap.get(l)).append(" - ");
 
         //Cut last hyphen sign
-        text = text.substring(0,text.length() - " - ".length());
+        builder.replace(builder.lastIndexOf(" - "), builder.length(), "");
 
-        return text;
+        return builder.toString();
     }
 
     @Override
