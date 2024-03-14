@@ -1,5 +1,6 @@
 package jeremijl.flashcardsproject;
 
+import jeremijl.flashcardsproject.WordPrinters.WordPrinter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -12,9 +13,10 @@ public class FlashCardsApp {
     public static void main(String[] args) {
         ConfigurableApplicationContext applicationContext = SpringApplication.run(FlashCardsApp.class, args);
 
-        FileServiceCSV fileService = applicationContext.getBean(FileServiceCSV.class);
-        EntryRepository entryRepository = applicationContext.getBean(EntryRepository.class);
-        FlashcardsController flashcardsController = applicationContext.getBean(FlashcardsController.class);
+        applicationContext.getBean(FileService.class);
+        applicationContext.getBean(EntryRepository.class);
+        applicationContext.getBean(FlashcardsController.class);
+        applicationContext.getBean(WordPrinter.class);
 
 
     }

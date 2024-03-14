@@ -10,7 +10,7 @@ import java.util.*;
 public class FlashcardsController extends Thread{
 
     //Beans
-    FileServiceCSV fileService;
+    FileService fileService;
     EntryRepository entryRepository;
     WordPrinter wordPrinter;
 
@@ -22,7 +22,7 @@ public class FlashcardsController extends Thread{
 
 
     @Autowired
-    public FlashcardsController(FileServiceCSV fileService, EntryRepository entryRepository, WordPrinter wordPrinter) {
+    public FlashcardsController(FileService fileService, EntryRepository entryRepository, WordPrinter wordPrinter) {
         //Assigning
         this.fileService = fileService;
         this.entryRepository = entryRepository;
