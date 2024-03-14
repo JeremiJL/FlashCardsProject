@@ -60,13 +60,29 @@ public class FlashcardsController extends Thread{
             }
 
         }
-
     }
 
     private void testLanguageSkills(){
 
-
-
+        //get random entry
+        Entry randomEntry = entryRepository.getRandomEntry();
+        //select language which translation will be missing
+        Lang selectedLang = Lang.selectRandomLanguage();
+        Lang[] filteredArr = (Lang[]) Arrays.stream(Lang.values()).filter(e -> !e.equals(selectedLang)).toArray(Lang[]::new);
+        //prepare massage
+        System.out.println("Provide missing translation");
+        wordPrinter.printText(randomEntry.selectedLangFormat(filteredArr) + "\n");
+        //collect user input
+        String input = consoleScanner.nextLine().toLowerCase();
+        // compare and print result
+        String correctAnswer = randomEntry.translationMap.get(selectedLang);
+        if (input.equals(correctAnswer.toLowerCase())) {
+            System.out.println("You are correct!");
+        }
+        else {
+            System.out.print("Incorrect! Correct answer is : ");
+            wordPrinter.printText(correctAnswer + "\n");
+        }
     }
 
     private void addNewWord(){
@@ -96,21 +112,6 @@ public class FlashcardsController extends Thread{
         }
 
     }
-
-    private void test(){
-
-//        Map<Lang, String> translations1 = new HashMap<>();
-//        translations1.put(Lang.ENGLISH, "flower");
-//        translations1.put(Lang.GERMAN, "Blume");
-//        translations1.put(Lang.POLISH, "kwiat");
-//
-//        Entry entry1 = new Entry(translations1);
-//
-//        fileService.writeEntriesToFile(entry1);
-
-        System.out.println(Arrays.toString(Lang.values()));
-    }
-
 
 
 }

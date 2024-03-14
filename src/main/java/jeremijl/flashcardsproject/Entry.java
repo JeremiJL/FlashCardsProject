@@ -13,15 +13,24 @@ public class Entry {
 
     @Override
     public String toString() {
-        return  translationMap.get(Lang.ENGLISH) + " - " +
-                translationMap.get(Lang.GERMAN) + " - " + translationMap.get(Lang.POLISH);
+        return selectedLangFormat(Lang.values());
     }
-
 
     public String toCSV() {
         return translationMap.get(Lang.ENGLISH) + ";" +
                 translationMap.get(Lang.GERMAN) + ";" + translationMap.get(Lang.POLISH);
 
+    }
+
+    public String selectedLangFormat(Lang ... languages){
+        String text = "";
+        for (Lang l : languages)
+            text += translationMap.get(l) + " - ";
+
+        //Cut last hyphen sign
+        text = text.substring(0,text.length() - " - ".length());
+
+        return text;
     }
 
     @Override
