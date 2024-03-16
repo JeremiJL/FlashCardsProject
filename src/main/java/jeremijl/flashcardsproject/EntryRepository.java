@@ -1,6 +1,8 @@
 package jeremijl.flashcardsproject;
 
+import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,7 @@ public class EntryRepository {
 
     public EntryRepository(EntityManager entityManager) {
         this.entityManager = entityManager;
+
     }
 
     @Transactional
@@ -30,13 +33,11 @@ public class EntryRepository {
     }
 
     @Transactional
-    public void modifyEntry(long id){
-//        Book dbbook = findById(book.getIdOfBook())
-//                .orElseThrow(BookNotFoundException::new);
-//        dbbook.setAuthor(book.getAuthor());
-//        dbbook.setPrice(book.getPrice());
-//        dbbook.setTitle(book.getTitle());
-//        return dbbook;
+    public void modifyEntry(long id, Entry entryModified) throws NoEntryFound {
+        Entry entryToMod = searchForEntry(id);
+        entryToMod.setEnglish(entryModified.getEnglish());
+        entryToMod.setGerman(entryModified.getGerman());
+        entryToMod.setPolish(entryModified.getPolish());
     }
 
     public Entry getRandomEntry(){
@@ -53,5 +54,9 @@ public class EntryRepository {
     public List<Entry> getAllEntries() {
         List<Entry> entries = entityManager.createQuery("SELECT e FROM Entry e").getResultList();
         return entries;
+    }
+
+    public void shutDown(){
+        entityManager.close();
     }
 }

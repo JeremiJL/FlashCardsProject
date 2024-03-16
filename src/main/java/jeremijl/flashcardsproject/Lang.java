@@ -1,6 +1,6 @@
 package jeremijl.flashcardsproject;
 
 enum Lang {
-    ENGLISH,GERMAN,POLISH;
+    ENGLISH,GERMAN,POLISH
 }
 

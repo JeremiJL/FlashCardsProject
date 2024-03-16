@@ -17,7 +17,6 @@ public class FlashCardsApp {
         applicationContext.getBean(FlashcardsController.class);
         applicationContext.getBean(WordPrinter.class);
 
-
     }
 
 

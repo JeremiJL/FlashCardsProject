@@ -56,10 +56,15 @@ public class FlashcardsController extends Thread{
                 case "d" -> deleteEntry();
                 case "e" -> displayAllWords();
                 case "f" -> testLanguageSkills();
-                case "g" -> running = false;
+                case "g" -> shutDown();
             }
 
         }
+    }
+
+    private void shutDown(){
+        running = false;
+        entryRepository.shutDown();
     }
 
     private void deleteEntry() {
@@ -79,14 +84,37 @@ public class FlashcardsController extends Thread{
     }
 
     private void modifyEntry() {
+        try{
+            //ask for id
+            System.out.println("Please, provide entry id : ");
+            long inputId = Long.parseLong(consoleScanner.nextLine());
+            //search for entry that user is willing to modify
+            Entry entry = entryRepository.searchForEntry(inputId);
+            //aks for new English translation
+            System.out.print("Provide new translation for ");
+            wordPrinter.printLine(entry.getEnglish() + " : ");
+            String newEnglish = consoleScanner.nextLine();
+            //aks for new German translation
+            System.out.print("Provide new translation for ");
+            wordPrinter.printLine(entry.getGerman() + " : ");
+            String newGerman = consoleScanner.nextLine();
+            //aks for new Polish translation
+            System.out.print("Provide new translation for ");
+            wordPrinter.printLine(entry.getPolish() + " : ");
+            String newPolish = consoleScanner.nextLine();
 
+            //Modify this entry
+            entryRepository.modifyEntry(inputId, new Entry(inputId, newEnglish,newGerman,newPolish));
+
+        } catch (NoEntryFound e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void searchForWord() {
         try{
-            //prompt
+            //ask for id
             System.out.println("Please, provide entry id : ");
-            //demand id from user
             long input = Long.parseLong(consoleScanner.nextLine());
             //fetch entry with given id
             Entry result = entryRepository.searchForEntry(input);

@@ -2,14 +2,9 @@ package jeremijl.flashcardsproject;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-import java.lang.reflect.Field;
-import java.util.Map;
 import java.util.Objects;
 
 @Entity
-@Table(name = "ENTRY")
 public class Entry {
 
     @Id
