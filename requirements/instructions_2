@@ -1,0 +1,22 @@
+I. (0 points) Preparation:
+
+Modify your Lab 02 solution so that in addition to adding new words to the dictionary, you
+can also search, sort, delete and modify them.
+When displaying the list of words, it should be possible to sort the entire list according to
+the selected language, both descending and ascending lexicographically.
+Instead of a CVS file, use the H2 database saved to a file (in the workspace directory).
+Make sure that if the database is not yet saved, it is created and filled with initial records,
+and if the database file already exists, no attempt is made to create it again and fill it with
+data.
+
+II. (5 points) :
+Create your own repository implementation based on a repository using JPA and
+Hibernate based on EntityManager (not Spring Data JPA!).
+Send the solution as a ZIP archive called sXXXXX-EntityManager.zip, where sXXXXX is
+your index number.
+
+III. (5 points) :
+Create your own repository implementation based on a repository using JPA and
+Hibernate based on Spring Data JPA.
+Send the solution as a ZIP archive called sXXXXX-SpringData.zip, where sXXXXX is your
+index number.
