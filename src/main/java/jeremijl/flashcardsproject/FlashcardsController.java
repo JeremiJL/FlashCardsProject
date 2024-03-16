@@ -10,7 +10,6 @@ import java.util.*;
 public class FlashcardsController extends Thread{
 
     //Beans
-    FileService fileService;
     EntryRepository entryRepository;
     WordPrinter wordPrinter;
 
@@ -22,13 +21,11 @@ public class FlashcardsController extends Thread{
 
 
     @Autowired
-    public FlashcardsController(FileService fileService, EntryRepository entryRepository, WordPrinter wordPrinter) {
+    public FlashcardsController(EntryRepository entryRepository, WordPrinter wordPrinter) {
         //Assigning
-        this.fileService = fileService;
         this.entryRepository = entryRepository;
         this.wordPrinter = wordPrinter;
         //Init
-        fileService.extractEntriesFromFile();
         running = true;
         this.start();
     }
@@ -41,53 +38,104 @@ public class FlashcardsController extends Thread{
         while(running){
 
             System.out.println("\nWhat would you like to do?\n" +
-                    "a) add a new word to the dictionary\n" +
-                    "b) display all words from the dictionary\n" +
-                    "c) test your language skills\n" +
-                    "d) quit\n" +
+                    "a) add a new entry to the dictionary\n" +
+                    "b) search for a word in the dictionary\n" +
+                    "c) modify entries in the dictionary\n" +
+                    "d) delete entries in the dictionary\n" +
+                    "e) display all words from the dictionary\n" +
+                    "f) test your language skills\n" +
+                    "g) quit\n" +
                     "Your option : ");
 
             input = consoleScanner.nextLine();
 
             switch (input) {
-                case "a" -> addNewWord();
-                case "b" -> displayAllWords();
-                case "c" -> testLanguageSkills();
-                case "d" -> running = false;
+                case "a" -> addNewEntry();
+                case "b" -> searchForWord();
+                case "c" -> modifyEntry();
+                case "d" -> deleteEntry();
+                case "e" -> displayAllWords();
+                case "f" -> testLanguageSkills();
+                case "g" -> running = false;
             }
 
         }
     }
 
-    private void testLanguageSkills(){
+    private void deleteEntry() {
+        try{
+            //prompt
+            System.out.println("Please, provide entry id : ");
+            //demand id from user
+            long input = Long.parseLong(consoleScanner.nextLine());
+            //delegate removal to entryRepository
+            entryRepository.removeEntry(input);
 
+        } catch (ClassCastException cce){
+            System.out.println("Wrong id format. Entry id is an integer.");
+        } catch (NoEntryFound e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void modifyEntry() {
+
+    }
+
+    private void searchForWord() {
+        try{
+            //prompt
+            System.out.println("Please, provide entry id : ");
+            //demand id from user
+            long input = Long.parseLong(consoleScanner.nextLine());
+            //fetch entry with given id
+            Entry result = entryRepository.searchForEntry(input);
+            //display
+            wordPrinter.printLine(result.toString());
+
+        } catch (ClassCastException cce){
+            System.out.println("Wrong id format. Entry id is an integer.");
+        } catch (NoEntryFound e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void testLanguageSkills(){
         //get random entry
         Entry randomEntry = entryRepository.getRandomEntry();
-        //select language which translation will be missing
-        Lang selectedLang = Lang.selectRandomLanguage();
-        Lang[] filteredArr = Arrays.stream(Lang.values()).filter(e -> !e.equals(selectedLang)).toArray(Lang[]::new);
-        //prepare massage
-        System.out.println("Provide missing translation");
-        wordPrinter.printText(randomEntry.selectedLangFormat(filteredArr) + "\n");
-        //collect user input
+
+        //get random language index
+        int missingLang = (int) (Math.random() * Lang.values().length);
+
+        //prepare message
+        String[] wordsArray = randomEntry.toArray();
+        String[] forDisplay = Arrays.copyOf(wordsArray,wordsArray.length);
+        forDisplay[missingLang] = "...";
+
+        //send message
+        wordPrinter.printLine(String.join(" - ", forDisplay));
+        System.out.println("Provide missing translation : ");
+
+        //get input
         String input = consoleScanner.nextLine().toLowerCase();
-        // compare and print result
-        String correctAnswer = randomEntry.translationMap.get(selectedLang);
-        if (input.equals(correctAnswer.toLowerCase())) {
+        String correctAnswer = wordsArray[missingLang].toLowerCase();
+
+        //compare
+        if (input.equals(correctAnswer)) {
             System.out.println("You are correct!");
         }
         else {
             System.out.print("Incorrect! Correct answer is : ");
-            wordPrinter.printText(correctAnswer + "\n");
+            wordPrinter.printLine( correctAnswer);
         }
     }
 
-    private void addNewWord(){
+    private void addNewEntry(){
 
         //prompt
         System.out.println("Add new dictionary entry.");
         Map<Lang,String> translations = new HashMap<>();
-        String value = "";
+        String value;
 
         //ask for consecutive translations
         for (Lang lang : Lang.values()){
@@ -96,14 +144,15 @@ public class FlashcardsController extends Thread{
             translations.put(lang,value);
         }
 
-        //tell writer to update dictionary
-        Entry newEntry = new Entry(translations);
-        fileService.writeEntriesToFile(newEntry);
+        //update dictionary
+        Entry newEntry = new Entry(entryRepository.getNewId(),
+                translations.get(Lang.ENGLISH),translations.get(Lang.GERMAN),translations.get(Lang.POLISH));
+        entryRepository.addEntry(newEntry);
     }
 
     private void displayAllWords(){
-        for (Entry entry : entryRepository.getEntrySet()){
-            wordPrinter.printText(entry.toString() + "\n");
+        for (Entry entry : entryRepository.getAllEntries()){
+            wordPrinter.printLine(entry.toString());
         }
     }
 

@@ -1,36 +1,41 @@
 package jeremijl.flashcardsproject;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Objects;
 
+@Entity
+@Table(name = "ENTRY")
 public class Entry {
 
-    public Map<Lang,String> translationMap;
+    @Id
+    private Long idTranslation;
 
-    public Entry(Map<Lang,String> translationMap) {
-        this.translationMap = translationMap;
+    private String english;
+    private String german;
+    private String polish;
+
+    public Entry(Long idTranslation, String english, String german, String polish) {
+        this.idTranslation = idTranslation;
+        this.english = english;
+        this.german = german;
+        this.polish = polish;
+    }
+
+    public Entry() {
     }
 
     @Override
     public String toString() {
-        return selectedLangFormat(Lang.values());
+        return idTranslation + ". " + english + " - " + german + " - " + polish;
     }
 
-    public String toCSV() {
-        return translationMap.get(Lang.ENGLISH) + ";" +
-                translationMap.get(Lang.GERMAN) + ";" + translationMap.get(Lang.POLISH);
-
-    }
-
-    public String selectedLangFormat(Lang ... languages){
-        StringBuilder builder = new StringBuilder();
-        for (Lang l : languages)
-            builder.append(translationMap.get(l)).append(" - ");
-
-        //Cut last hyphen sign
-        builder.replace(builder.lastIndexOf(" - "), builder.length(), "");
-
-        return builder.toString();
+    public String[] toArray() {
+        return new String[]{english,german,polish};
     }
 
     @Override
@@ -39,16 +44,46 @@ public class Entry {
         if (obj == null || getClass() != obj.getClass())
             return false;
         else {
-            Entry entry = (Entry) obj;
-            return (
-                    this.translationMap.get(Lang.ENGLISH).equals(entry.translationMap.get(Lang.ENGLISH)) &&
-                    this.translationMap.get(Lang.POLISH).equals(entry.translationMap.get(Lang.POLISH)) &&
-                    this.translationMap.get(Lang.GERMAN).equals(entry.translationMap.get(Lang.GERMAN)));
+            Entry e = (Entry) obj;
+            return this.idTranslation.equals(e.idTranslation);
         }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(translationMap);
+        return Objects.hash(idTranslation);
+    }
+
+    public void setIdTranslation(Long idTranslation) {
+        this.idTranslation = idTranslation;
+    }
+
+    @Id
+    public Long getIdTranslation() {
+        return idTranslation;
+    }
+
+    public String getEnglish() {
+        return english;
+    }
+
+    public void setEnglish(String english) {
+        this.english = english;
+    }
+
+    public String getGerman() {
+        return german;
+    }
+
+    public void setGerman(String german) {
+        this.german = german;
+    }
+
+    public String getPolish() {
+        return polish;
+    }
+
+    public void setPolish(String polish) {
+        this.polish = polish;
     }
 }

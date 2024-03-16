@@ -13,7 +13,6 @@ public class FlashCardsApp {
     public static void main(String[] args) {
         ConfigurableApplicationContext applicationContext = SpringApplication.run(FlashCardsApp.class, args);
 
-        applicationContext.getBean(FileService.class);
         applicationContext.getBean(EntryRepository.class);
         applicationContext.getBean(FlashcardsController.class);
         applicationContext.getBean(WordPrinter.class);
