@@ -1,82 +1,47 @@
 package jeremijl.flashcardsproject;
 
-import com.zaxxer.hikari.HikariDataSource;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Repository
-public class EntryRepository {
+public interface EntryRepository extends CrudRepository<Entry,Long> {
 
-    private final EntityManager entityManager;
-    private static  HashMap<Integer,String> sortQueryDictionary = new HashMap<>();
-    static {
-        sortQueryDictionary.put(Lang.ENGLISH.ordinal(), "SELECT e FROM Entry e ORDER BY e.english");
-        sortQueryDictionary.put(Lang.GERMAN.ordinal(), "SELECT e FROM Entry e ORDER BY e.german");
-        sortQueryDictionary.put(Lang.POLISH.ordinal(), "SELECT e FROM Entry e ORDER BY e.polish");
-    }
+    //Sort queries
+    List<Entry> findAllByIdTranslationNotNullOrderByEnglishAsc();
+    List<Entry> findAllByIdTranslationNotNullOrderByEnglishDesc();
 
-    public EntryRepository(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    List<Entry> findAllByIdTranslationNotNullOrderByGermanAsc();
+    List<Entry> findAllByIdTranslationNotNullOrderByGermanDesc();
 
-    }
+    List<Entry> findAllByIdTranslationNotNullOrderByPolishAsc();
+    List<Entry> findAllByIdTranslationNotNullOrderByPolishDesc();
 
-    @Transactional
-    public void addEntry(Entry entry){
-        entityManager.persist(entry);
-    }
+    //Helper queries
+    int countALlBy();
 
-    public Entry searchForEntry(Long id) throws NoEntryFound{
-        return Optional.ofNullable(entityManager.find(Entry.class, id)).orElseThrow(NoEntryFound::new);
-    }
+    @Query(value = "SELECT MAX(e.idTranslation) FROM Entry e")
+    Long findMaxId();
 
-    @Transactional
-    public void removeEntry(long id) throws NoEntryFound {
-        entityManager.remove(searchForEntry(id));
-    }
-
-    @Transactional
-    public void modifyEntry(long id, Entry entryModified) throws NoEntryFound {
-        Entry entryToMod = searchForEntry(id);
-        entryToMod.setEnglish(entryModified.getEnglish());
-        entryToMod.setGerman(entryModified.getGerman());
-        entryToMod.setPolish(entryModified.getPolish());
-    }
-
-    public Entry getRandomEntry(){
+    //Necessary functionalities
+    default Entry getRandomEntry() throws RuntimeException{
         //get random index
-        int randomIndex = (int) (Math.random() * getAllEntries().size());
-        return getAllEntries().get(randomIndex);
+        long randomIndex = (long) (Math.random() * countALlBy());
+        //if there are no entries raise an exception
+        if (countALlBy() == 0)
+            throw new IndexOutOfBoundsException();
+        //else iterate over the entries and stop at random entry
+        int counter = 0;
+        for (Entry e : this.findAll()){
+            if (counter++ == randomIndex)
+                return e;
+        }
+        throw new RuntimeException();
     }
 
-    public Long getNewId(){
-        long lastId = getAllEntries().stream().map(Entry::getIdTranslation).max(Long::compareTo).orElse(0L);
-        return lastId + 1;
-    }
-
-    public List<Entry> getAllEntries() {
-        List<Entry> entries = entityManager.createQuery("SELECT e FROM Entry e").getResultList();
-        return entries;
-    }
-
-    public List<Entry> sortWithRespectToLanguage(int language, Boolean ascending) {
-
-        //form an appropriate query
-        String queryText = sortQueryDictionary.get(language);
-        if (ascending)
-            queryText += " asc";
-        else
-            queryText += " desc";
-        //fetch the data from db using entity manager
-        List<Entry> entries = entityManager.createQuery(queryText).getResultList();
-        return entries;
-
-    }
-
-    public void shutDown(){
-        entityManager.close();
+    default Long getNewId(){
+        return findMaxId() + 1;
     }
 }
