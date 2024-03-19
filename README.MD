@@ -1,3 +1,3 @@
 # FlashCards Project using Spring Framework
-# EntityManager solution
+# Automatic JPA solution
 __author - Jeremi Lipniacki__
