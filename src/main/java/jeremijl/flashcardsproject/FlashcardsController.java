@@ -43,8 +43,9 @@ public class FlashcardsController extends Thread{
                     "c) modify entries in the dictionary\n" +
                     "d) delete entries in the dictionary\n" +
                     "e) display all words from the dictionary\n" +
-                    "f) test your language skills\n" +
-                    "g) quit\n" +
+                    "f) sort and display words\n" +
+                    "g) test your language skills\n" +
+                    "h) quit\n" +
                     "Your option : ");
 
             input = consoleScanner.nextLine();
@@ -55,11 +56,34 @@ public class FlashcardsController extends Thread{
                 case "c" -> modifyEntry();
                 case "d" -> deleteEntry();
                 case "e" -> displayAllWords();
-                case "f" -> testLanguageSkills();
-                case "g" -> shutDown();
+                case "f" -> sortAndDisplay();
+                case "g" -> testLanguageSkills();
+                case "h" -> shutDown();
             }
 
         }
+    }
+
+    private void sortAndDisplay(){
+
+        //prompt, ask about language
+        System.out.println("With respect to which language do you want to sort dictionary records?");
+        int opt = 'a'; // value of 'a' in ASCII
+        for (Lang lang : Lang.values()){
+            System.out.println( (char)(opt++) + ") "  + lang.toString());
+        }
+        int inputLang = consoleScanner.nextLine().charAt(0) - 'a';
+        // prompt, ask about order
+        System.out.println("Should records be sorted in ascending order or descending order?");
+        System.out.println("[asc / desc] ?");
+        Boolean inputAsc = consoleScanner.nextLine().equalsIgnoreCase("asc");
+        //Print results
+        System.out.println(inputLang + " " + inputAsc);
+        System.out.println("Sorted results :");
+        for (Entry e : entryRepository.sortWithRespectToLanguage(inputLang, inputAsc)){
+            wordPrinter.printLine(e.toString());
+        }
+
     }
 
     private void shutDown(){

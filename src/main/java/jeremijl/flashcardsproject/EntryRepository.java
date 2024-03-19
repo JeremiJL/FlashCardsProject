@@ -12,6 +12,12 @@ import java.util.*;
 public class EntryRepository {
 
     private final EntityManager entityManager;
+    private static  HashMap<Integer,String> sortQueryDictionary = new HashMap<>();
+    static {
+        sortQueryDictionary.put(Lang.ENGLISH.ordinal(), "SELECT e FROM Entry e ORDER BY e.english");
+        sortQueryDictionary.put(Lang.GERMAN.ordinal(), "SELECT e FROM Entry e ORDER BY e.german");
+        sortQueryDictionary.put(Lang.POLISH.ordinal(), "SELECT e FROM Entry e ORDER BY e.polish");
+    }
 
     public EntryRepository(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -54,6 +60,20 @@ public class EntryRepository {
     public List<Entry> getAllEntries() {
         List<Entry> entries = entityManager.createQuery("SELECT e FROM Entry e").getResultList();
         return entries;
+    }
+
+    public List<Entry> sortWithRespectToLanguage(int language, Boolean ascending) {
+
+        //form an appropriate query
+        String queryText = sortQueryDictionary.get(language);
+        if (ascending)
+            queryText += " asc";
+        else
+            queryText += " desc";
+        //fetch the data from db using entity manager
+        List<Entry> entries = entityManager.createQuery(queryText).getResultList();
+        return entries;
+
     }
 
     public void shutDown(){
